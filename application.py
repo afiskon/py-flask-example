@@ -56,8 +56,6 @@ def root():
     return flask.redirect('/api/1.0/themes')
 
 # e.g. failed to parse json
-
-
 @app.errorhandler(400)
 def page_not_found(e):
     return resp(400, {})
