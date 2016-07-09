@@ -32,7 +32,7 @@ def theme_validate():
     if json is None:
         errors.append(
             "No JSON sent. Did you forget to set Content-Type header" +
-			" to application/json?")
+            " to application/json?")
         return (None, errors)
 
     for field_name in ['title', 'url']:
@@ -90,7 +90,7 @@ def post_theme():
     with db_conn() as db:
         insert = db.prepare(
             "INSERT INTO themes (title, url) VALUES ($1, $2) " +
-			"RETURNING id")
+            "RETURNING id")
         [(theme_id,)] = insert(json['title'], json['url'])
         return resp(200, {"theme_id": theme_id})
 
