@@ -7,14 +7,11 @@ import json
 app = flask.Flask(__name__)
 
 # disables JSON pretty-printing in flask.jsonify
-# app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False # disables JSON
-# pretty-printing
-
-# TODO: use config!
+# app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 
 def db_conn():
-    return postgresql.open('pq://eax@192.168.122.184/eax')
+    return postgresql.open('pq://eax@localhost/eax')
 
 
 def to_json(data):
@@ -34,13 +31,15 @@ def theme_validate():
     json = flask.request.get_json()
     if json is None:
         errors.append(
-            "No JSON sent. Did you forget to set Content-Type header to application/json?")
+            "No JSON sent. Did you forget to set Content-Type header" +
+			" to application/json?")
         return (None, errors)
 
     for field_name in ['title', 'url']:
         if type(json.get(field_name)) is not str:
             errors.append(
-                "Field '{}' is missing or is not a string".format(field_name))
+                "Field '{}' is missing or is not a string".format(
+					field_name))
 
     return (json, errors)
 
@@ -92,7 +91,8 @@ def post_theme():
 
     with db_conn() as db:
         insert = db.prepare(
-            "INSERT INTO themes (title, url) VALUES ($1, $2) RETURNING id")
+            "INSERT INTO themes (title, url) VALUES ($1, $2) " +
+			"RETURNING id")
         [(theme_id,)] = insert(json['title'], json['url'])
         return resp(200, {"theme_id": theme_id})
 
